@@ -1,0 +1,23 @@
+# Robots.txt for MERN Starter
+# https://www.robotstxt.org/robotstxt.html
+
+User-agent: *
+Allow: /
+
+# Disallow admin and private areas
+Disallow: /dashboard
+Disallow: /api/
+Disallow: /admin/
+
+# Allow important pages
+Allow: /
+Allow: /about
+Allow: /login
+Allow: /register
+Allow: /example-components
+
+# Sitemap location
+Sitemap: https://mern-starter.example.com/sitemap.xml
+
+# Crawl delay (optional - be respectful to the server)
+Crawl-delay: 1

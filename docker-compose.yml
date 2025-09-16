@@ -1,0 +1,73 @@
+version: "3.8"
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: mern-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: mern_starter
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - mern-network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mern-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/mern_starter?authSource=admin
+      JWT_SECRET: "9Hex9x9Ms82O7Ylo+oABwpKC6JomYA2sMIMWBObdikeUKJvsjwwNg5biQUV9+zbiFW3+74PgbqmDqtznIkXfHg=="
+      JWT_EXPIRE: 7d
+      CLIENT_URL: http://localhost:3000
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongodb
+    networks:
+      - mern-network
+    volumes:
+      - ./backend/src:/app/src
+    command: npm run dev
+
+  # Frontend React App
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:3001/api
+        VITE_APP_NAME: "MERN Starter Kit"
+        VITE_APP_VERSION: "1.0.0"
+    container_name: mern-frontend
+    restart: unless-stopped
+    environment:
+      VITE_API_URL: http://localhost:3001/api
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - mern-network
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  mern-network:
+    driver: bridge
