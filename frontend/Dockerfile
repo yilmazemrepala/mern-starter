@@ -24,7 +24,7 @@ ENV VITE_APP_NAME=$VITE_APP_NAME
 ENV VITE_APP_VERSION=$VITE_APP_VERSION
 
 # Build the application (without React Snap for Docker)
-RUN npm run build:docker
+RUN npm install --force && npm run build:docker
 
 # Production stage
 FROM nginx:alpine

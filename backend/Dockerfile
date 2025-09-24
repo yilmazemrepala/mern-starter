@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install all dependencies (including dev dependencies for TypeScript)
-RUN npm ci
+RUN npm install --force
 
 # Install global TypeScript tools
 RUN npm install -g typescript ts-node nodemon
